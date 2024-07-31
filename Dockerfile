@@ -7,6 +7,7 @@ RUN apt-get install -y git bash vim
 # Setup mirror
 RUN mkdir -p /opt/mirror
 RUN git clone https://github.com/MagicMirrorOrg/MagicMirror /opt/mirror/MagicMirror
+RUN git clone https://github.com/tnoff/MMM-BartTimes.git /opt/mirror/MagicMirror/modules/MMM-BartTimes
 WORKDIR /opt/mirror/MagicMirror
 RUN npm install
 

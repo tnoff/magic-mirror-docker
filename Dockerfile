@@ -1,4 +1,4 @@
-FROM node:22-bullseye
+FROM node:23-bullseye
 
 # Setup basics
 RUN apt-get -y update && apt-get -y upgrade

@@ -108,4 +108,4 @@ jobs:
           platforms: linux/amd64
           push: true
           context: .
-          ttags: sjc.ocir.io/tnoff/magic-mirror:latest,sjc.ocir.io/tnoff/magic-mirror:${{ needs.build_docker_tag.outputs.submajor_version }},sjc.ocir.io/tnoff/magic-mirror:${{ needs.build_docker_tag.outputs.full_version }},sjc.ocir.io/tnoff/magic-mirror:${{ needs.build_docker_tag.outputs.full_version }}.${{ github.run_number }}
+          tags: sjc.ocir.io/tnoff/magic-mirror:latest,sjc.ocir.io/tnoff/magic-mirror:${{ needs.build_docker_tag.outputs.submajor_version }},sjc.ocir.io/tnoff/magic-mirror:${{ needs.build_docker_tag.outputs.full_version }},sjc.ocir.io/tnoff/magic-mirror:${{ needs.build_docker_tag.outputs.full_version }}.${{ github.run_number }}

@@ -85,7 +85,7 @@ jobs:
           tags: sjc.ocir.io/tnoff/magic-mirror:latest,sjc.ocir.io/tnoff/magic-mirror:${{ needs.build_docker_tag.outputs.submajor_version }},sjc.ocir.io/tnoff/magic-mirror:${{ needs.build_docker_tag.outputs.full_version }},sjc.ocir.io/tnoff/magic-mirror:${{ needs.build_docker_tag.outputs.full_version }}.${{ github.run_number }}
   push_to_registry_arm:
     name: Push Docker ARM image to Docker
-    runs-on: ubuntu-24.04
+    runs-on: [self-hosted, linux, ARM64]
     permissions:
       contents: read
     needs:

@@ -1,14 +1,7 @@
 FROM node:23-bullseye
 
 # Setup basics
-RUN apt-get -y update && apt-get -y upgrade
-RUN apt-get install -y git bash vim certbot git python3-dev python3-virtualenv jq
-
-
-COPY files/requirements.txt /tmp/requirements.txt
-RUN virtualenv /opt/venv
-RUN /opt/venv/bin/pip install -r /tmp/requirements.txt
-RUN rm /tmp/requirements.txt
+RUN apt-get update && apt-get install -y git
 
 # Setup mirror
 RUN mkdir -p /opt/mirror

@@ -1,4 +1,4 @@
-FROM node:23-bullseye
+FROM node:24-bullseye
 
 # Setup basics
 RUN apt-get update && apt-get install -y git

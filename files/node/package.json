@@ -1,0 +1,15 @@
+{
+  "name": "magicmirror-otel",
+  "version": "1.0.0",
+  "description": "MagicMirror with OpenTelemetry instrumentation",
+  "main": "start.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node start.js"
+  },
+  "dependencies": {
+    "@opentelemetry/auto-instrumentations-node": "^0.45.0",
+    "@opentelemetry/sdk-node": "^0.45.0",
+    "@opentelemetry/sdk-trace-node": "^1.22.0"
+  }
+}

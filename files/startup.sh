@@ -5,6 +5,6 @@ if [ -f "/opt/mirror/env/custom-startup.sh" ]; then
     bash /opt/mirror/env/custom-startup.sh
 fi
 
-cp /opt/mirror/env/config.js /opt/mirror/MagicMirror/config/
+envsubst < /opt/mirror/env/config.js > /opt/mirror/MagicMirror/config/config.js
 cd /opt/mirror/MagicMirror/
 npm run server

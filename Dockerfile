@@ -1,7 +1,7 @@
 FROM node:25-bullseye
 
 # Setup basics
-RUN apt-get update && apt-get install -y git
+RUN apt-get update && apt-get install -y git gettext
 
 # Setup mirror
 RUN mkdir -p /opt/mirror

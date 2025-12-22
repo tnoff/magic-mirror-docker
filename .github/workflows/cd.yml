@@ -7,6 +7,8 @@ on:
 
 jobs:
   tag_build:
+    permissions:
+      contents: write
     uses: tnoff/github-workflows/.github/workflows/tag.yml@f21247582b270f3d3259cf6b7233f4c7538c1a1b
     with:
       version_file: ./VERSION

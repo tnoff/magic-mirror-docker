@@ -1,4 +1,4 @@
-FROM node:25-bullseye
+FROM node:25-bookworm
 
 # Setup basics
 RUN apt-get update && apt-get install -y git gettext

@@ -26,4 +26,11 @@ RUN npm install
 COPY files/startup.sh /opt/mirror
 RUN chmod +x /opt/mirror/startup.sh
 
+# Create env directory for mounted config (will be a mount point)
+RUN mkdir -p /opt/mirror/env
+
+# Change ownership to node user and switch to non-root user
+RUN chown -R node:node /opt/mirror
+USER node
+
 CMD ["bash", "/opt/mirror/startup.sh"]

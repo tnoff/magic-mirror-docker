@@ -1,7 +1,6 @@
 #!/bin/bash
 
 if [ -f "/opt/mirror/env/custom-startup.sh" ]; then
-    chmod +x /opt/mirror/env/custom-startup.sh
     bash /opt/mirror/env/custom-startup.sh
 fi
 

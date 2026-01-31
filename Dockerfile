@@ -1,7 +1,11 @@
 FROM node:25-bookworm
 
 # Setup basics
-RUN apt-get update && apt-get install -y git gettext
+# Update to latest for security fixes
+RUN apt-get update && \
+    apt-get install -y git gettext && \
+    apt-get upgrade -y --no-install-recommends && \
+    rm -rf /var/lib/apt/lists/*
 
 # Setup mirror
 RUN mkdir -p /opt/mirror

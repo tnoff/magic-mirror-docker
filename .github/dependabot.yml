@@ -6,3 +6,9 @@ updates:
       interval: "daily"
     labels:
       - "build-docker"
+  - package-ecosystem: "npm"
+    directory: "/files/node"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependencies"

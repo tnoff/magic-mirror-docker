@@ -10,6 +10,7 @@ Dockerized [MagicMirror](https://github.com/MagicMirrorOrg/MagicMirror) installa
 - **Environment Variable Support**: Config files processed with `envsubst` for easy environment-based configuration
 - **Custom Startup Scripts**: Support for custom initialization logic
 - **Security**: Runs as non-root user (UID 1000)
+- **Health Check**: Built-in `/health` endpoint with Docker `HEALTHCHECK` configured
 
 ## Usage
 
@@ -89,6 +90,21 @@ Ensure the script is readable:
 
 ```bash
 chmod 755 /path/to/custom-startup.sh
+```
+
+## Health Check
+
+The container exposes a `/health` endpoint on port 8080 that returns `{"status":"ok"}` once the MagicMirror Express server is running. Docker's `HEALTHCHECK` polls this endpoint automatically:
+
+- **Interval**: 30s
+- **Timeout**: 10s
+- **Start period**: 60s (grace period for server startup)
+- **Retries**: 3
+
+You can also query it manually:
+
+```bash
+curl http://localhost:8080/health
 ```
 
 ## OpenTelemetry Configuration

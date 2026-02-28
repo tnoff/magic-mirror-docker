@@ -22,6 +22,7 @@ RUN git clone https://github.com/darickc/MMM-BackgroundSlideshow.git /opt/mirror
 # Add in instrumentation files
 
 RUN sed -i.bak 's|"server": "node ./serveronly"|"server": "node --require ./otel-init.js serveronly"|' /opt/mirror/MagicMirror/package.json
+RUN sed -i '/app\.get("\/env".*getEnvVars/a\    app.get("/health", (req, res) => res.json({ status: "ok" }));' /opt/mirror/MagicMirror/js/server.js
 # Run install on custom modules
 WORKDIR /opt/mirror/MagicMirror/modules/MMM-BartTimes
 RUN npm install
@@ -35,5 +36,8 @@ RUN npm install
 
 # Create env directory for mounted config (will be a mount point)
 RUN mkdir -p /opt/mirror/env
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+  CMD node -e "require('http').get('http://localhost:8080/health', (r) => process.exit(r.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))"
 
 CMD ["bash", "/opt/mirror/startup.sh"]

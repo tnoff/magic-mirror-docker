@@ -8,8 +8,8 @@
     "start": "node start.js"
   },
   "dependencies": {
-    "@opentelemetry/auto-instrumentations-node": "^0.71.0",
-    "@opentelemetry/sdk-node": "^0.213.0",
+    "@opentelemetry/auto-instrumentations-node": "^0.72.0",
+    "@opentelemetry/sdk-node": "^0.214.0",
     "@opentelemetry/sdk-trace-node": "^2.5.1"
   }
 }

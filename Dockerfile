@@ -18,15 +18,12 @@ RUN chmod +x /opt/mirror/startup.sh
 USER node
 
 RUN git clone https://github.com/tnoff/MMM-BartTimes.git /opt/mirror/MagicMirror/modules/MMM-BartTimes
-RUN git clone https://github.com/darickc/MMM-BackgroundSlideshow.git /opt/mirror/MagicMirror/modules/MMM-BackgroundSlideshow
 # Add in instrumentation files
 
 RUN sed -i.bak 's|"server": "node ./serveronly"|"server": "node --require ./otel-init.js serveronly"|' /opt/mirror/MagicMirror/package.json
 RUN sed -i '/app\.get("\/env".*getEnvVars/a\    app.get("/health", (req, res) => res.json({ status: "ok" }));' /opt/mirror/MagicMirror/js/server.js
 # Run install on custom modules
 WORKDIR /opt/mirror/MagicMirror/modules/MMM-BartTimes
-RUN npm install
-WORKDIR /opt/mirror/MagicMirror/modules/MMM-BackgroundSlideshow
 RUN npm install
 
 # Run final install

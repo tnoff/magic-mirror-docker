@@ -3,9 +3,18 @@
   "extends": [
     "config:recommended"
   ],
-  "enabledManagers": ["gitlabci", "gitlabci-include", "dockerfile", "npm"],
+  "enabledManagers": ["gitlabci", "gitlabci-include", "dockerfile", "npm", "custom.regex"],
   "labels": ["dependencies"],
   "rebaseWhen": "behind-base-branch",
+  "customManagers": [
+    {
+      "customType": "regex",
+      "managerFilePatterns": ["/Dockerfile$/"],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>[a-z-]+) depName=(?<depName>[^\\s]+) packageName=(?<packageName>[^\\s]+) currentValue=(?<currentValue>[^\\s]+)\\s+ARG \\w+=(?<currentDigest>[a-f0-9]{40})"
+      ]
+    }
+  ],
   "packageRules": [
     {
       "matchPackageNames": ["pytest", "pytest-cov", "pytest-mock", "requests-mock", "tox", "pylint", "bandit"],
@@ -13,7 +22,7 @@
       "automerge": true
     },
     {
-      "matchManagers": ["npm", "dockerfile"],
+      "matchManagers": ["npm", "dockerfile", "custom.regex"],
       "matchPackageNames": ["!pytest", "!pytest-cov", "!pytest-mock", "!requests-mock", "!tox", "!pylint", "!bandit"],
       "additionalBranchPrefix": "dev-"
     }

@@ -1,71 +1,83 @@
 # AGENTS.md
 
-This file provides guidance to AI coding agents when working with code in this repository.
+Guidance for AI coding agents working in this repository. For end-user
+usage (mounting config, env vars, ports) see [README.md](README.md); for
+build, run, and CI see [DEVELOPMENT.md](DEVELOPMENT.md).
 
-## Overview
+## What this repo is
 
-This repository provides a Dockerized MagicMirror installation with OpenTelemetry instrumentation. The Docker image bundles MagicMirror core and custom modules (MMM-BartTimes, MMM-BackgroundSlideshow) with OTLP trace export capabilities.
+A single-Dockerfile build that bundles [MagicMirror²](https://github.com/MagicMirrorOrg/MagicMirror)
+with two third-party modules and an OpenTelemetry preload, then ships
+the result to OCIR.
 
-## Architecture
+Image surface:
 
-### Docker Build Process
-The Dockerfile (Dockerfile:1-30) performs these key steps:
-1. Clones MagicMirror core and required modules from GitHub
-2. Injects OpenTelemetry instrumentation by copying `otel-init.js` and modifying MagicMirror's package.json to preload it with `--require`
-3. Installs OpenTelemetry dependencies into the MagicMirror installation
-4. Sets up startup script that handles environment variable substitution
+- `/opt/mirror/MagicMirror/` — upstream MagicMirror, untouched except
+  for the OTel preload patch
+- `/opt/mirror/MagicMirror/modules/MMM-BartTimes/` —
+  `tnoff-projects/MMM-BartTimes` clone
+- `/opt/mirror/MagicMirror/modules/MMM-Wallpaper/` —
+  `kolbyjack/MMM-Wallpaper` clone
+- `/opt/mirror/env/` — the **mount point** for the user's
+  `config.js` and optional `custom-startup.sh`
+- `/opt/mirror/startup.sh` — runs `envsubst` over the mounted
+  `config.js`, optionally execs `custom-startup.sh`, then launches the
+  server
 
-### Configuration System
-- Config file must be mounted at `/opt/mirror/env/config.js`
-- At startup, `envsubst` processes the config file to substitute environment variables before copying to MagicMirror's config location (files/startup.sh:7)
-- Optional custom startup script can be placed at `/opt/mirror/env/custom-startup.sh` and will run before the main startup (files/startup.sh:3-5)
-- **Important**: The container runs as non-root user `node` (UID 1000, GID 1000). Files mounted at `/opt/mirror/env/` must be readable by UID 1000. Ensure mounted files have appropriate permissions (e.g., `chmod 644` for config.js, `chmod 755` for custom-startup.sh on the host)
+Container runs as `node` (UID 1000, GID 1000).
 
-### OpenTelemetry Integration
-- `files/node/otel-init.js` initializes the OpenTelemetry Node SDK with OTLP HTTP trace exporter
-- The MagicMirror server process automatically loads this instrumentation via Node's `--require` flag
-- OTLP exporter configuration is controlled by standard OpenTelemetry environment variables
+## Non-obvious internals
 
-## Build Commands
+### Three Dockerfile patches to MagicMirror
 
-### Building the Docker image
+The Dockerfile rewrites MagicMirror in place after the upstream tarball
+is extracted:
+
+1. **OTel preload** — `sed -i 's|node ./serveronly|node --require ./otel-init.js serveronly|'`
+   on `package.json`'s `server` script. This is how the OTel SDK gets
+   loaded before any MagicMirror code runs.
+2. **`/health` endpoint** — `sed` inserts an Express route after the
+   `/env` handler in `js/server.js`, returning `{"status":"ok"}`. The
+   `HEALTHCHECK` in the Dockerfile depends on this — don't remove it.
+3. **Drop the upstream `postinstall`** — a Node one-liner deletes
+   `scripts.postinstall` from `package.json`. Upstream's postinstall
+   shells out to `git clean`, which fails inside the image (no `.git`).
+
+If you bump `MAGICMIRROR_REF` and either patch stops matching, the build
+fails loudly — `sed` exits 0 even when no replacement happens, so check
+the diff if `--require ./otel-init.js` doesn't appear in the final
+image.
+
+### `envsubst` runs at container start, not build
+
+`config.js` is processed by `envsubst` from `gettext` every time the
+container starts (`files/startup.sh`). Environment variables in the
+mounted config are substituted then copied to MagicMirror's expected
+location. This is why the user has to pass them via `-e` on `docker
+run`, not bake them in.
+
+### `MMM-Wallpaper`, not `MMM-BackgroundSlideshow`
+
+Older docs referenced `MMM-BackgroundSlideshow`. The current image
+ships `kolbyjack/MMM-Wallpaper` instead. If a downstream config still
+references `module: "MMM-BackgroundSlideshow"`, swap it for
+`MMM-Wallpaper` and adjust the per-module options to match its schema.
+
+### Renovate-driven SHA pinning
+
+All three upstream refs are pinned by commit SHA via `ARG`s annotated
+with `# renovate: datasource=git-refs …`. Renovate opens MRs to bump
+them. Don't replace the SHAs with branch names — `master` would
+re-pull on every cache miss and silently break reproducibility.
+
+## File permissions on mounted volumes
+
+Mounts at `/opt/mirror/env/` must be readable by UID 1000. On the host:
+
 ```bash
-docker build -t magic-mirror .
+chmod 644 /path/to/config.js
+chmod 755 /path/to/custom-startup.sh   # if used
 ```
 
-### Multi-platform build (matching CI/CD)
-```bash
-docker buildx build --platform linux/amd64,linux/arm64 .
-```
-
-## CI/CD Pipeline
-
-### Pull Request Validation
-- CI workflow (.github/workflows/ci.yml) validates Docker builds on PRs
-- Uses Docker Buildx for build testing
-
-### Release Process
-- CD workflow (.github/workflows/cd.yml) triggers on merged PRs with label `build-docker`
-- Automatically tags releases based on VERSION file
-- Builds and pushes multi-platform images (amd64, arm64) to Oracle Cloud Infrastructure Registry (OCIR)
-- Uses reusable workflows from `tnoff/github-workflows` repository
-
-### Version Management
-- Version is tracked in the `VERSION` file at repository root
-- CD pipeline reads this file to create git tags
-- Current version format: semantic versioning (e.g., 0.2.1)
-
-## Development Notes
-
-### Modifying MagicMirror Modules
-The Dockerfile clones specific MagicMirror modules:
-- MMM-BartTimes: BART transit times
-- MMM-BackgroundSlideshow: Background slideshow functionality
-
-To add new modules, add git clone and npm install steps in the Dockerfile after line 10.
-
-### OpenTelemetry Configuration
-To modify instrumentation behavior, edit `files/node/otel-init.js`. The OTLP exporter endpoint and other settings can be configured via environment variables per OpenTelemetry spec (OTEL_EXPORTER_OTLP_ENDPOINT, etc.).
-
-### Testing Configuration Changes
-Since the config.js is processed by envsubst at runtime, test environment variable substitution by running the container with appropriate env vars set.
+Otherwise the container starts but `envsubst` fails opening the file
+and the symptom looks like "MagicMirror won't load my config".

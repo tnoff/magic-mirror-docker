@@ -5,7 +5,7 @@ Dockerized [MagicMirror](https://github.com/MagicMirrorOrg/MagicMirror) installa
 ## Features
 
 - **MagicMirror Core**: Latest version cloned from upstream
-- **Custom Modules**: Pre-installed with MMM-BartTimes and MMM-BackgroundSlideshow
+- **Custom Modules**: Pre-installed with MMM-BartTimes and MMM-Wallpaper
 - **OpenTelemetry Integration**: Automatic instrumentation with OTLP trace export
 - **Environment Variable Support**: Config files processed with `envsubst` for easy environment-based configuration
 - **Custom Startup Scripts**: Support for custom initialization logic

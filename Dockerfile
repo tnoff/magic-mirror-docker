@@ -10,7 +10,7 @@ RUN apt-get update && \
 # renovate: datasource=git-refs depName=MagicMirror packageName=https://github.com/MagicMirrorOrg/MagicMirror currentValue=master
 ARG MAGICMIRROR_REF=fb41d24ef522e91e802e2a623ff6afbddeb3c9d8
 # renovate: datasource=git-refs depName=MMM-BartTimes packageName=https://gitlab.com/tnoff-projects/MMM-BartTimes currentValue=master
-ARG MMM_BARTTIMES_REF=b2c527d5d638d75c4d8ebfe1dcfea7baa3c37ebe
+ARG MMM_BARTTIMES_REF=5c124ac6c44791cf83b627297245e8dd96f5a467
 # renovate: datasource=git-refs depName=MMM-Wallpaper packageName=https://github.com/kolbyjack/MMM-Wallpaper currentValue=master
 ARG MMM_WALLPAPER_REF=86a0df464eab14d95cde697fa472b46e27997cfb
 

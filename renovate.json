@@ -21,6 +21,11 @@
       "matchManagers": ["npm", "dockerfile", "custom.regex"],
       "matchPackageNames": ["!pytest", "!pytest-cov", "!pytest-mock", "!requests-mock", "!tox", "!pylint", "!bandit"],
       "additionalBranchPrefix": "dev-"
+    },
+    {
+      "description": "Group all OpenTelemetry SDK + instrumentation packages into a single MR; the core (opentelemetry-js) and contrib (opentelemetry-js-contrib) monorepos otherwise land as separate MRs that conflict on package.json.",
+      "matchPackageNames": ["@opentelemetry/**"],
+      "groupName": "opentelemetry"
     }
   ]
 }

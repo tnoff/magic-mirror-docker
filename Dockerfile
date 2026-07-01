@@ -48,7 +48,17 @@ RUN npm install
 
 # Run final install
 WORKDIR /opt/mirror/MagicMirror
-RUN npm install --save @opentelemetry/auto-instrumentations-node @opentelemetry/sdk-node @opentelemetry/sdk-trace-node
+# OTel instrumentation deps are declared (and Renovate-bumped) in
+# files/node/package.json. COPY it in and install exactly those versions so a
+# bump changes a real, COPY'd build input — invalidating this layer and
+# producing a new image digest — instead of editing a file the build never
+# reads (which left every rebuild byte-identical, collapsing all tags onto one
+# manifest digest). Installed into MagicMirror's tree because otel-init.js is
+# --require'd from this WORKDIR.
+COPY --chown=node:node files/node/package.json /opt/mirror/MagicMirror/otel-deps.json
+RUN OTEL_PKGS="$(node -e 'const d=require("./otel-deps.json").dependencies; process.stdout.write(Object.keys(d).map(k=>k+"@"+d[k]).join(" "))')" \
+ && npm install --save $OTEL_PKGS \
+ && rm otel-deps.json
 RUN npm install
 
 # Create env directory for mounted config (will be a mount point)

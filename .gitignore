@@ -1,0 +1,6 @@
+# Local secrets / runtime config — keep the .example files tracked instead.
+.env
+volumes/config.js
+volumes/custom-startup.sh
+
+docker-compose.override.yml

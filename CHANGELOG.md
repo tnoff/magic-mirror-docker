@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.26] - 2026-08-17
+
+### Changed
+
+- Bumped MMM-BartTimes to 5a9fb0d — a transient 5xx from the transit feed is now retried instead of blanking the departure board until the next refresh
+- Bumped MMM-BartTimes tracing — each feed fetch is one span statused on its final outcome, so a failure a retry recovered from no longer shows as an error in traces
+
 ## [0.2.25] - 2026-08-13
 
 ### Changed

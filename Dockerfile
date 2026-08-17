@@ -10,7 +10,7 @@ RUN apt-get update && \
 # renovate: datasource=git-refs depName=MagicMirror packageName=https://github.com/MagicMirrorOrg/MagicMirror currentValue=master
 ARG MAGICMIRROR_REF=fb41d24ef522e91e802e2a623ff6afbddeb3c9d8
 # renovate: datasource=git-refs depName=MMM-BartTimes packageName=https://gitlab.com/tnoff-projects/MMM-BartTimes currentValue=main
-ARG MMM_BARTTIMES_REF=f9264acd8b977c8ba57e0dc76847de2f9e0bc337
+ARG MMM_BARTTIMES_REF=5a9fb0d6ad2762eef45da1aee0c6a578536da07e
 # renovate: datasource=git-refs depName=MMM-Wallpaper packageName=https://github.com/kolbyjack/MMM-Wallpaper currentValue=master
 ARG MMM_WALLPAPER_REF=86a0df464eab14d95cde697fa472b46e27997cfb
 
@@ -42,7 +42,10 @@ RUN sed -i '/app\.get("\/env".*getEnvVars/a\    app.get("/health", (req, res) =>
 RUN node -e 'const fs=require("fs"),p="/opt/mirror/MagicMirror/package.json",j=JSON.parse(fs.readFileSync(p));delete j.scripts.postinstall;fs.writeFileSync(p,JSON.stringify(j,null,2));'
 # Run install on custom modules
 WORKDIR /opt/mirror/MagicMirror/modules/MMM-BartTimes
-RUN npm install
+# --omit=dev: the module's devDependencies are its test-only OpenTelemetry SDK
+# (~18MB), which nothing at runtime imports — the SDK the module's spans
+# actually report through is the one installed below from files/node.
+RUN npm install --omit=dev
 WORKDIR /opt/mirror/MagicMirror/modules/MMM-Wallpaper
 RUN npm install
 

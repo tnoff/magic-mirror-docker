@@ -81,7 +81,38 @@ poll.
 ## Modifying OpenTelemetry instrumentation
 
 `files/node/otel-init.js` is preloaded via Node's `--require` flag (the
-Dockerfile patches `package.json` to add it). The OTLP exporter is
+Dockerfile patches `package.json` to add it). The OTLP *exporter* is
 configured entirely via standard OTEL env vars
-(`OTEL_EXPORTER_OTLP_ENDPOINT`, `OTEL_SERVICE_NAME`, …) — no in-image
-config to edit.
+(`OTEL_EXPORTER_OTLP_ENDPOINT`, `OTEL_SERVICE_NAME`, …) — nothing to
+edit in the image for that.
+
+The *instrumentation set* does carry two deliberate departures from the
+`getNodeAutoInstrumentations()` default. Both exist because the default
+made this image the single largest source of spans in the cluster:
+
+- **`@opentelemetry/instrumentation-router` is disabled.** MagicMirror's
+  server is Express 5, which routes through the standalone `router`
+  package. The auto set ships an instrumentation for both, and each
+  traces the same middleware chain independently — every request
+  produced two parallel sets of `middleware - *` / `request handler - *`
+  spans describing the identical call, one tagged `express.*` and one
+  tagged `router.*`. Disabling the router one halves the per-request span
+  count and loses nothing.
+
+  Do **not** disable `instrumentation-express` as well. It is what names
+  the server span after the matched route; without it the span degrades
+  from `GET /` to a bare `GET`.
+
+- **`/health` is not traced**, via `ignoreIncomingRequestHook` on
+  `instrumentation-http`. The endpoint is hit by the kubelet's readiness
+  (10s) and liveness (30s) probes and by nothing else, at roughly 166
+  probes per real page view. Skipping the request at the HTTP layer
+  suppresses the whole subtree, not just the server span:
+  `instrumentation-express` only creates middleware spans inside an
+  active HTTP span, so with no span to parent them it emits nothing and
+  leaves no orphans behind.
+
+To re-check either claim after a dependency bump, count the spans a
+request actually produces — point `OTEL_EXPORTER_OTLP_ENDPOINT` at a
+local listener and hit `/health` and `/`. As of the versions in
+`files/node/package.json`, `/health` yields 0 spans and `/` yields 4.

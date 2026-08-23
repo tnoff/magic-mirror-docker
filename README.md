@@ -116,6 +116,8 @@ The container includes OpenTelemetry auto-instrumentation. Configure using stand
 - `OTEL_EXPORTER_OTLP_HEADERS`: Additional headers for OTLP export
 - See [OpenTelemetry documentation](https://opentelemetry.io/docs/specs/otel/configuration/sdk-environment-variables/) for full configuration options
 
+Two things are tuned in-image rather than by env var: requests to `/health` are not traced (it is a probe endpoint, and tracing it drowned out real traffic), and `@opentelemetry/instrumentation-router` is disabled because it duplicates every span `@opentelemetry/instrumentation-express` already emits. See [DEVELOPMENT.md](DEVELOPMENT.md#modifying-opentelemetry-instrumentation).
+
 ## Building
 
 ### Local Build

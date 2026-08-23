@@ -1,0 +1,27 @@
+perf: build on node:25-bookworm-slim
+
+The full node image carries ~950 MB of build toolchain this image never
+uses -- a 588 MB apt layer among others. The runtime is `node
+serveronly`, and the only build-time package needed is gettext, which
+the Dockerfile already installs explicitly.
+
+Measured on amd64:
+
+  node:25-bookworm       2.13 GB
+  node:25-bookworm-slim  1.18 GB   (-950 MB, 45%)
+
+Verified at parity rather than assumed: both images report node v25.9.0,
+carry /usr/bin/envsubst, resolve an identical 658 packages under
+MagicMirror/node_modules, and have both source patches applied (the
+/health route in js/server.js and the --require ./otel-init.js rewrite
+in package.json).
+
+Found while investigating ci-pool node failures: this build was writing
+37.7 GB to a 41.66 GB node and taking kubelet and CRI-O down with it,
+evicting every other pod on the node. This change is worth making on its
+own merits but does NOT fix that -- a 2.13 GB image writing 37.7 GB is a
+~17x amplification in buildkit's on-disk state, which is tracked
+separately in docs/projects/ci-build-disk-exhaustion.md.
+
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01VEQBtnrAbgFmQbRfFoR3Gb

@@ -1,4 +1,10 @@
-FROM node:25-bookworm
+# -slim, not the full node image. The full variant carries ~950 MB of build
+# toolchain (a 588 MB apt layer among others) that nothing here needs: the
+# runtime is `node serveronly`, and the only build-time package required is
+# gettext, installed below. Measured on amd64: 2.13 GB -> 1.18 GB, a 45% cut,
+# with the image verified at parity -- same node v25.9.0, envsubst present,
+# identical 658 node_modules packages, both source patches applied.
+FROM node:25-bookworm-slim
 
 # Setup basics
 # Update to latest for security fixes

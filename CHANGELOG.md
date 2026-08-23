@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.29] - 2026-08-23
+
+### Changed
+
+- Build on `node:25-bookworm-slim` instead of the full `node:25-bookworm`. The full variant carries ~950 MB of build toolchain the runtime never uses; dropping it takes the image from 2.13 GB to 1.18 GB with no functional change.
+
 ## [0.2.28] - 2026-08-23
 
 ### Changed

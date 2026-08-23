@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.28] - 2026-08-23
+
+### Changed
+
+- Requests to `/health` are no longer traced, and the duplicate `@opentelemetry/instrumentation-router` is disabled. MagicMirror's Express 5 server was being traced twice over — once by `instrumentation-express` and once by `instrumentation-router` — producing eight spans for every request, and the kubelet probes `/health` roughly 166 times for each real page view. Between them the three mirror pods were the largest single source of spans in the cluster. A `/health` probe now emits nothing at all and a real request emits four spans instead of eight, with the route name on the server span unchanged.
+
 ## [0.2.27] - 2026-08-19
 
 ### Changed

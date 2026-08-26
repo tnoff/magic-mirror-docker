@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.30] - 2026-08-26
+
+### Changed
+
+- chore(deps): update https://gitlab.com/tnoff-projects/github-workflows digest to 499db25
+
 ## [0.2.29] - 2026-08-23
 
 ### Changed

@@ -15,7 +15,11 @@ RUN apt-get update && \
 
 # renovate: datasource=git-refs depName=MagicMirror packageName=https://github.com/MagicMirrorOrg/MagicMirror currentValue=master
 ARG MAGICMIRROR_REF=fb41d24ef522e91e802e2a623ff6afbddeb3c9d8
-# renovate: datasource=git-refs depName=MMM-BartTimes packageName=https://gitlab.com/tnoff-projects/MMM-BartTimes currentValue=main
+# MMM-BartTimes flipped to GitHub-canonical; the GitLab copy is frozen at this
+# very SHA, so a git-refs datasource pointed there would report "up to date"
+# forever and this pin would silently stop moving. Same archive byte-for-byte
+# (74538 bytes, 25 entries) -- verified 2026-08-27.
+# renovate: datasource=git-refs depName=MMM-BartTimes packageName=https://github.com/tnoff/MMM-BartTimes currentValue=main
 ARG MMM_BARTTIMES_REF=5a9fb0d6ad2762eef45da1aee0c6a578536da07e
 # renovate: datasource=git-refs depName=MMM-Wallpaper packageName=https://github.com/kolbyjack/MMM-Wallpaper currentValue=master
 ARG MMM_WALLPAPER_REF=86a0df464eab14d95cde697fa472b46e27997cfb
@@ -34,7 +38,7 @@ USER node
 
 RUN mkdir -p /opt/mirror/MagicMirror/modules/MMM-BartTimes \
              /opt/mirror/MagicMirror/modules/MMM-Wallpaper
-ADD --chown=node:node https://gitlab.com/tnoff-projects/MMM-BartTimes/-/archive/${MMM_BARTTIMES_REF}/MMM-BartTimes-${MMM_BARTTIMES_REF}.tar.gz /tmp/bart.tgz
+ADD --chown=node:node https://github.com/tnoff/MMM-BartTimes/archive/${MMM_BARTTIMES_REF}.tar.gz /tmp/bart.tgz
 RUN tar -xzf /tmp/bart.tgz -C /opt/mirror/MagicMirror/modules/MMM-BartTimes --strip-components=1 \
  && rm /tmp/bart.tgz
 ADD --chown=node:node https://github.com/kolbyjack/MMM-Wallpaper/archive/${MMM_WALLPAPER_REF}.tar.gz /tmp/wallpaper.tgz

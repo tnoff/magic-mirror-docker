@@ -67,7 +67,10 @@ jobs:
     needs: push-image
     uses: tnoff/github-workflows/.github/workflows/trigger-bump.yml@370df8eb59c656d05358d6be7799d7355f6d750e
     # bump_source is magic-mirror, NOT the repo name -- docker-apps rewrites the
-    # pin in both apps/mirror/castro and apps/mirror/concord from that key.
+    # pin in every apps/mirror/<site> manifest from that key. Three sites as of
+    # 2026-08-27 (castro, concord, sanjose); do not re-enumerate them here, the
+    # comment this replaced said "both castro and concord" and had been wrong
+    # since sanjose landed on 2026-08-12.
     with:
       bump_source: magic-mirror
       image: ${{ needs.push-image.outputs.image }}

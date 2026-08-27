@@ -41,18 +41,22 @@ Then `curl http://localhost:8080/health` should return
 
 ## CI/CD
 
-CI is GitLab CI. `.gitlab-ci.yml` pulls templates from upstream
-`tnoff-projects/github-workflows`:
+CI is GitHub Actions. `.github/workflows/` calls reusable workflows from
+`tnoff/github-workflows`, SHA-pinned and kept current by Renovate:
 
-| Template | Purpose |
-|---|---|
-| `gitlab/buildkit-build-check.yml` | MR-time "does the Dockerfile build" check; produces a tarball for downstream scanning |
-| `gitlab/buildkit-docker-push.yml` | Build + push the image with `:<short-sha>` and `:latest` tags to OCIR |
-| `gitlab/trigger-bump.yml` | Open an MR in `docker-apps` to bump the SHA pin after a successful push |
-| `gitlab/trufflehog.yml`, `gitlab/trufflehog-image.yml` | Secret scan (repo + built image) |
-| `gitlab/tag.yml`, `gitlab/bump-version.yml` | Read `VERSION`, push the matching git tag, bump on default branch |
-| `gitlab/renovate.yml` | Scheduled dependency updates |
-| `gitlab/discord-notify.yml` | Pipeline-failure notification |
+| Caller | Reusable workflow | Purpose |
+|---|---|---|
+| `ci.yml` | `trufflehog.yml` | Secret scan on PRs |
+| `ci.yml` | `docker-build-check.yml` | PR-time "does the Dockerfile build" check, plus the image secret scan — one job, where GitLab needed two and a bucket to ship the tarball between them |
+| `ci.yml` | `bump-version.yml` | Bump `VERSION` and write a changelog fragment on `renovate/dev-*` PRs |
+| `ci.yml` | `renovate-auto-approve.yml` | Supply the code-owner approval Renovate cannot give itself |
+| `release.yml` | `assemble-changelog.yml` | Fold `changelog.d/*.md` into `CHANGELOG.md` on `main` |
+| `release.yml` | `tag.yml` | Read `VERSION`, push the matching git tag |
+| `release.yml` | `docker-push.yml` | Build + push the image with `:<short-sha>` and `:latest` tags to OCIR |
+| `release.yml` | `trigger-bump.yml` | Open an MR in `docker-apps` to bump the SHA pin after a successful push |
+| `scheduled.yml` | `renovate.yml`, `branch-cleanup.yml` | Weekly dependency updates and stale-branch pruning |
+
+`.gitlab-ci.yml` is frozen in place for history and no longer runs.
 
 `VERSION` is the single source of truth — bump it and CI tags + pushes
 the new image. Don't tag manually.
@@ -65,7 +69,7 @@ comments:
 | ARG | Source |
 |---|---|
 | `MAGICMIRROR_REF` | `MagicMirrorOrg/MagicMirror` (GitHub) |
-| `MMM_BARTTIMES_REF` | `tnoff-projects/MMM-BartTimes` (GitLab) |
+| `MMM_BARTTIMES_REF` | `tnoff/MMM-BartTimes` (GitHub) |
 | `MMM_WALLPAPER_REF` | `kolbyjack/MMM-Wallpaper` (GitHub) |
 
 Renovate watches each via the `# renovate: datasource=git-refs …`

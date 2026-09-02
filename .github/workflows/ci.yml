@@ -20,7 +20,7 @@ permissions:
 jobs:
   secrets:
     name: Scan for secrets
-    uses: tnoff/github-workflows/.github/workflows/trufflehog.yml@f064a9ce541cc052d9a2c9036bde578aede7b7d1
+    uses: tnoff/github-workflows/.github/workflows/trufflehog.yml@3326ac29c672f67bce33272b3a09fe06c9947080
 
   # Reimplements .image-build-rules' `changes:` block: only rebuild when
   # something baked into the image changed -- the Dockerfile (where the
@@ -72,7 +72,7 @@ jobs:
     name: Build and scan image
     needs: changes
     if: needs.changes.outputs.image == 'true'
-    uses: tnoff/github-workflows/.github/workflows/docker-build-check.yml@f064a9ce541cc052d9a2c9036bde578aede7b7d1
+    uses: tnoff/github-workflows/.github/workflows/docker-build-check.yml@3326ac29c672f67bce33272b3a09fe06c9947080
 
   bump-version:
     name: Bump version
@@ -82,7 +82,7 @@ jobs:
     if: startsWith(github.head_ref, 'renovate/dev-')
     permissions:
       contents: write
-    uses: tnoff/github-workflows/.github/workflows/bump-version.yml@f064a9ce541cc052d9a2c9036bde578aede7b7d1
+    uses: tnoff/github-workflows/.github/workflows/bump-version.yml@3326ac29c672f67bce33272b3a09fe06c9947080
     with:
       bump_changelog: true
     secrets:
@@ -93,7 +93,7 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
-    uses: tnoff/github-workflows/.github/workflows/renovate-auto-approve.yml@f064a9ce541cc052d9a2c9036bde578aede7b7d1
+    uses: tnoff/github-workflows/.github/workflows/renovate-auto-approve.yml@3326ac29c672f67bce33272b3a09fe06c9947080
     with:
       branch_pattern: '^renovate/'
     secrets:

@@ -1,0 +1,28 @@
+# Backstage catalog descriptor. Discovered automatically -- the portal's GitHub
+# provider reads catalog-info.yaml from the default branch of every repo the
+# tnoff-backstage App can see, so adding this file is the whole of onboarding.
+# Nothing needs registering by hand, and it appears on the next 3h sweep.
+#
+# No annotations, deliberately. github.com/project-slug is DERIVED: the portal
+# registers AnnotateScmSlugEntityProcessor, which reads the slug off the location
+# this file was fetched from, so writing one here would duplicate something that
+# cannot go stale. The rest -- backstage.io/techdocs-ref, the kubernetes
+# selectors, the grafana selectors -- each assert that a target EXISTS, and none
+# of those targets do yet. They arrive with the plugins that read them.
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: magic-mirror-docker
+  description: >-
+    Dockerised MagicMirror with OpenTelemetry instrumentation, built from upstream with
+    custom modules pre-installed. docker-apps runs this image three times, one per
+    location: apps/mirror/castro, apps/mirror/concord and apps/mirror/sanjose.
+  # Three deployments from one image is why no kubernetes annotation is guessed at
+  # here: a single kubernetes-id would have to pick one instance or merge all three,
+  # and which of those is wanted is a question for the Kubernetes-plugin phase.
+spec:
+  type: service
+  owner: group:default/admin
+  lifecycle: production
+  dependsOn:
+    - component:default/MMM-BartTimes

@@ -31,7 +31,7 @@ jobs:
     name: Assemble changelog
     permissions:
       contents: write
-    uses: tnoff/github-workflows/.github/workflows/assemble-changelog.yml@2c7a6597fce4072fb2755f49742147e7482e6065
+    uses: tnoff/github-workflows/.github/workflows/assemble-changelog.yml@8ef2b98ffb32c908bb2c374ae3e930bb23ba98e4
     secrets:
       app_client_id: ${{ secrets.CI_APP_CLIENT_ID }}
       app_private_key: ${{ secrets.CI_APP_PRIVATE_KEY }}
@@ -41,7 +41,7 @@ jobs:
     needs: assemble-changelog
     permissions:
       contents: write
-    uses: tnoff/github-workflows/.github/workflows/tag.yml@2c7a6597fce4072fb2755f49742147e7482e6065
+    uses: tnoff/github-workflows/.github/workflows/tag.yml@8ef2b98ffb32c908bb2c374ae3e930bb23ba98e4
     with:
       gate_on_fragments: true
     secrets:
@@ -51,7 +51,7 @@ jobs:
   push-image:
     name: Push image
     if: "${{ !startsWith(github.event.head_commit.message, 'docs: assemble changelog') }}"
-    uses: tnoff/github-workflows/.github/workflows/docker-push.yml@2c7a6597fce4072fb2755f49742147e7482e6065
+    uses: tnoff/github-workflows/.github/workflows/docker-push.yml@8ef2b98ffb32c908bb2c374ae3e930bb23ba98e4
     # registry / namespace / repo_name are INPUTS, not secrets. GitHub refuses
     # to set a job output containing secret material, so as secrets the `image`
     # output below comes back EMPTY and trigger-bump sends a blank IMAGE_NAME.
@@ -67,7 +67,7 @@ jobs:
   trigger-bump:
     name: Trigger docker-apps bump
     needs: push-image
-    uses: tnoff/github-workflows/.github/workflows/trigger-bump-dispatch.yml@2c7a6597fce4072fb2755f49742147e7482e6065
+    uses: tnoff/github-workflows/.github/workflows/trigger-bump-dispatch.yml@8ef2b98ffb32c908bb2c374ae3e930bb23ba98e4
     # bump_source is magic-mirror, NOT the repo name -- docker-apps rewrites the
     # pin in every apps/mirror/<site> manifest from that key. Three sites as of
     # 2026-08-27 (castro, concord, sanjose); do not re-enumerate them here, the

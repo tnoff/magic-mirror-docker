@@ -15,13 +15,26 @@ metadata:
   name: magic-mirror-docker
   description: >-
     Dockerised MagicMirror with OpenTelemetry instrumentation, built from upstream with
-    custom modules pre-installed. docker-apps runs this image three times, one per
-    location: apps/mirror/castro, apps/mirror/concord and apps/mirror/sanjose.
-  # Three deployments from one image is why no kubernetes annotation is guessed at
-  # here: a single kubernetes-id would have to pick one instance or merge all three,
-  # and which of those is wanted is a question for the Kubernetes-plugin phase.
+    MMM-BartTimes and MMM-Wallpaper baked in at pinned refs. docker-apps runs this image
+    three times, one per physical location -- mirror-castro, mirror-concord and
+    mirror-sanjose, each its own Component in that repo.
+  # `library` rather than `service`, changed once those three Components existed. Third
+  # application of the same rule (after database-backup#226 and oke-security-scanner#143):
+  # if an image is deployed BY something else rather than deploying itself, the
+  # deployments are the services and the image's repo is the library.
+  #
+  # The dependsOn below stays here rather than moving to the three deployments, and that
+  # is the useful half of the split. Both modules are ADDed into the image at pinned refs
+  # (Dockerfile lines 23 and 41), so every mirror ships both regardless of which it
+  # displays -- castro renders BartTimes and Wallpaper, concord renders BartTimes,
+  # sanjose renders neither. That difference is CONFIG, not a build dependency, so the
+  # edge belongs to the artifact and not to its instances. Putting it on the deployments
+  # would have said sanjose depends on a module it never renders.
+  #
+  # No MMM-Wallpaper edge: it is kolbyjack's repo, outside this fleet, so there is no
+  # entity to point at. Absent rather than invented.
 spec:
-  type: service
+  type: library
   owner: group:default/admin
   lifecycle: production
   dependsOn:

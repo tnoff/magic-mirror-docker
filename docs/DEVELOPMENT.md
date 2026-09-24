@@ -1,7 +1,7 @@
 # Development
 
 Build, test, and CI for this Docker image. End-user documentation
-(mounting config, env vars, ports) lives in [README.md](README.md); for
+(mounting config, env vars, ports) lives in [README.md](../README.md); for
 agent-facing internals see [AGENTS.md](AGENTS.md).
 
 ## Prerequisites
@@ -49,11 +49,11 @@ CI is GitHub Actions. `.github/workflows/` calls reusable workflows from
 | `ci.yml` | `trufflehog.yml` | Secret scan on PRs |
 | `ci.yml` | `docker-build-check.yml` | PR-time "does the Dockerfile build" check, plus the image secret scan — one job, where GitLab needed two and a bucket to ship the tarball between them |
 | `ci.yml` | `bump-version.yml` | Bump `VERSION` and write a changelog fragment on `renovate/dev-*` PRs |
-| `ci.yml` | `renovate-auto-approve.yml` | Supply the code-owner approval Renovate cannot give itself |
+| `ci.yml` | `check-workflow-contracts.yml` | Catch a `uses:` whose inputs/secrets no longer match the pinned callee |
 | `release.yml` | `assemble-changelog.yml` | Fold `changelog.d/*.md` into `CHANGELOG.md` on `main` |
 | `release.yml` | `tag.yml` | Read `VERSION`, push the matching git tag |
 | `release.yml` | `docker-push.yml` | Build + push the image with `:<short-sha>` and `:latest` tags to OCIR |
-| `release.yml` | `trigger-bump.yml` | Open an MR in `docker-apps` to bump the SHA pin after a successful push |
+| `release.yml` | `trigger-bump-dispatch.yml` | Open an MR in `docker-apps` to bump the SHA pin after a successful push |
 | `scheduled.yml` | `renovate.yml`, `branch-cleanup.yml` | Weekly dependency updates and stale-branch pruning |
 
 `.gitlab-ci.yml` is frozen in place for history and no longer runs.

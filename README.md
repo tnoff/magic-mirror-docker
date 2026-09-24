@@ -116,7 +116,7 @@ The container includes OpenTelemetry auto-instrumentation. Configure using stand
 - `OTEL_EXPORTER_OTLP_HEADERS`: Additional headers for OTLP export
 - See [OpenTelemetry documentation](https://opentelemetry.io/docs/specs/otel/configuration/sdk-environment-variables/) for full configuration options
 
-Two things are tuned in-image rather than by env var: requests to `/health` are not traced (it is a probe endpoint, and tracing it drowned out real traffic), and `@opentelemetry/instrumentation-router` is disabled because it duplicates every span `@opentelemetry/instrumentation-express` already emits. See [DEVELOPMENT.md](DEVELOPMENT.md#modifying-opentelemetry-instrumentation).
+Two things are tuned in-image rather than by env var: requests to `/health` are not traced (it is a probe endpoint, and tracing it drowned out real traffic), and `@opentelemetry/instrumentation-router` is disabled because it duplicates every span `@opentelemetry/instrumentation-express` already emits. See [DEVELOPMENT.md](docs/DEVELOPMENT.md#modifying-opentelemetry-instrumentation).
 
 ## Building
 
@@ -135,7 +135,7 @@ docker buildx build --platform linux/amd64,linux/arm64 -t magic-mirror .
 ## Included MagicMirror Modules
 
 - **[MMM-BartTimes](https://github.com/tnoff/MMM-BartTimes)**: Display BART transit times
-- **[MMM-BackgroundSlideshow](https://github.com/darickc/MMM-BackgroundSlideshow)**: Background image slideshow
+- **[MMM-Wallpaper](https://github.com/kolbyjack/MMM-Wallpaper)**: Background image slideshow
 
 ## License
 

@@ -1,7 +1,7 @@
 # AGENTS.md
 
 Guidance for AI coding agents working in this repository. For end-user
-usage (mounting config, env vars, ports) see [README.md](README.md); for
+usage (mounting config, env vars, ports) see [README.md](../README.md); for
 build, run, and CI see [DEVELOPMENT.md](DEVELOPMENT.md).
 
 ## What this repo is
@@ -15,7 +15,7 @@ Image surface:
 - `/opt/mirror/MagicMirror/` — upstream MagicMirror, untouched except
   for the OTel preload patch
 - `/opt/mirror/MagicMirror/modules/MMM-BartTimes/` —
-  `tnoff-projects/MMM-BartTimes` clone
+  `tnoff/MMM-BartTimes` clone
 - `/opt/mirror/MagicMirror/modules/MMM-Wallpaper/` —
   `kolbyjack/MMM-Wallpaper` clone
 - `/opt/mirror/env/` — the **mount point** for the user's

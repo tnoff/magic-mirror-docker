@@ -68,7 +68,7 @@ jobs:
     name: Scan for secrets
     needs: metadata
     if: needs.metadata.outputs.only != 'true'
-    uses: tnoff/github-workflows/.github/workflows/trufflehog.yml@bad6dacd6d4d75b465314b1ec984efd86cc8f5e6
+    uses: tnoff/github-workflows/.github/workflows/trufflehog.yml@0ce2ef948ca1fbc2787f4e9cab5ffd36ddea9e4c
 
   # Reimplements .image-build-rules' `changes:` block: only rebuild when
   # something baked into the image changed -- the Dockerfile (where the
@@ -122,7 +122,7 @@ jobs:
     name: Build and scan image
     needs: changes
     if: needs.changes.outputs.image == 'true'
-    uses: tnoff/github-workflows/.github/workflows/docker-build-check.yml@bad6dacd6d4d75b465314b1ec984efd86cc8f5e6
+    uses: tnoff/github-workflows/.github/workflows/docker-build-check.yml@0ce2ef948ca1fbc2787f4e9cab5ffd36ddea9e4c
 
   bump-version:
     name: Bump version
@@ -132,7 +132,7 @@ jobs:
     if: startsWith(github.head_ref, 'renovate/dev-')
     permissions:
       contents: write
-    uses: tnoff/github-workflows/.github/workflows/bump-version.yml@bad6dacd6d4d75b465314b1ec984efd86cc8f5e6
+    uses: tnoff/github-workflows/.github/workflows/bump-version.yml@0ce2ef948ca1fbc2787f4e9cab5ffd36ddea9e4c
     with:
       bump_changelog: true
     secrets:
@@ -148,7 +148,7 @@ jobs:
     name: Workflow contracts
     needs: metadata
     if: needs.metadata.outputs.only != 'true'
-    uses: tnoff/github-workflows/.github/workflows/check-workflow-contracts.yml@bad6dacd6d4d75b465314b1ec984efd86cc8f5e6
+    uses: tnoff/github-workflows/.github/workflows/check-workflow-contracts.yml@0ce2ef948ca1fbc2787f4e9cab5ffd36ddea9e4c
 
   result:
     name: CI result

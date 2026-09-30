@@ -34,7 +34,7 @@ permissions:
 jobs:
   publish:
     name: Generate and publish
-    uses: tnoff/github-workflows/.github/workflows/techdocs-publish.yml@f6569d2b6f242fb91759fe0ebfa990a99c09585b
+    uses: tnoff/github-workflows/.github/workflows/techdocs-publish.yml@0ce2ef948ca1fbc2787f4e9cab5ffd36ddea9e4c
     with:
       entity_ref: default/Component/magic-mirror-docker
     secrets:

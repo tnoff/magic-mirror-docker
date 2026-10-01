@@ -1,23 +1,23 @@
 # AGENTS.md
 
 Guidance for AI coding agents working in this repository. For end-user
-usage (mounting config, env vars, ports) see [README.md](../README.md); for
+usage (mounting config, env vars, ports) see [README.md](README.md); for
 build, run, and CI see [DEVELOPMENT.md](DEVELOPMENT.md).
 
 ## What this repo is
 
 A single-Dockerfile build that bundles [MagicMirror²](https://github.com/MagicMirrorOrg/MagicMirror)
 with two third-party modules and an OpenTelemetry preload, then ships
-the result to OCIR.
+the result to OCIR (`linux/arm64`; the cluster is ARM64).
 
 Image surface:
 
 - `/opt/mirror/MagicMirror/` — upstream MagicMirror, untouched except
   for the OTel preload patch
 - `/opt/mirror/MagicMirror/modules/MMM-BartTimes/` —
-  `tnoff/MMM-BartTimes` clone
+  `tnoff/MMM-BartTimes` at the pinned commit
 - `/opt/mirror/MagicMirror/modules/MMM-Wallpaper/` —
-  `kolbyjack/MMM-Wallpaper` clone
+  `kolbyjack/MMM-Wallpaper` at the pinned commit
 - `/opt/mirror/env/` — the **mount point** for the user's
   `config.js` and optional `custom-startup.sh`
 - `/opt/mirror/startup.sh` — runs `envsubst` over the mounted
@@ -56,18 +56,12 @@ mounted config are substituted then copied to MagicMirror's expected
 location. This is why the user has to pass them via `-e` on `docker
 run`, not bake them in.
 
-### `MMM-Wallpaper`, not `MMM-BackgroundSlideshow`
-
-Older docs referenced `MMM-BackgroundSlideshow`. The current image
-ships `kolbyjack/MMM-Wallpaper` instead. If a downstream config still
-references `module: "MMM-BackgroundSlideshow"`, swap it for
-`MMM-Wallpaper` and adjust the per-module options to match its schema.
-
 ### Renovate-driven SHA pinning
 
 All three upstream refs are pinned by commit SHA via `ARG`s annotated
-with `# renovate: datasource=git-refs …`. Renovate opens MRs to bump
-them. Don't replace the SHAs with branch names — `master` would
+with `# renovate: datasource=git-refs …`. Renovate opens PRs to bump
+them (`MMM_BARTTIMES_REF` tracks `main` of `tnoff/MMM-BartTimes`; the module
+is fetched as a tarball of that commit, not cloned). Don't replace the SHAs with branch names — `master` would
 re-pull on every cache miss and silently break reproducibility.
 
 ## File permissions on mounted volumes

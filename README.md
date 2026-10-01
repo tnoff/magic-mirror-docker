@@ -4,7 +4,7 @@ Dockerized [MagicMirror](https://github.com/MagicMirrorOrg/MagicMirror) installa
 
 ## Features
 
-- **MagicMirror Core**: Latest version cloned from upstream
+- **MagicMirror Core**: Upstream MagicMirror at a Renovate-pinned commit
 - **Custom Modules**: Pre-installed with MMM-BartTimes and MMM-Wallpaper
 - **OpenTelemetry Integration**: Automatic instrumentation with OTLP trace export
 - **Environment Variable Support**: Config files processed with `envsubst` for easy environment-based configuration
@@ -116,26 +116,31 @@ The container includes OpenTelemetry auto-instrumentation. Configure using stand
 - `OTEL_EXPORTER_OTLP_HEADERS`: Additional headers for OTLP export
 - See [OpenTelemetry documentation](https://opentelemetry.io/docs/specs/otel/configuration/sdk-environment-variables/) for full configuration options
 
-Two things are tuned in-image rather than by env var: requests to `/health` are not traced (it is a probe endpoint, and tracing it drowned out real traffic), and `@opentelemetry/instrumentation-router` is disabled because it duplicates every span `@opentelemetry/instrumentation-express` already emits. See [DEVELOPMENT.md](docs/DEVELOPMENT.md#modifying-opentelemetry-instrumentation).
+Two things are tuned in-image rather than by env var: requests to `/health` are not traced (it is a probe endpoint, and tracing it drowned out real traffic), and `@opentelemetry/instrumentation-router` is disabled because it duplicates every span `@opentelemetry/instrumentation-express` already emits. See [DEVELOPMENT.md](https://github.com/tnoff/magic-mirror-docker/blob/main/docs/DEVELOPMENT.md#modifying-opentelemetry-instrumentation).
 
 ## Building
-
-### Local Build
 
 ```bash
 docker build -t magic-mirror .
 ```
 
-### Multi-platform Build
-
-```bash
-docker buildx build --platform linux/amd64,linux/arm64 -t magic-mirror .
-```
+See [DEVELOPMENT.md](https://github.com/tnoff/magic-mirror-docker/blob/main/docs/DEVELOPMENT.md) for pinned refs, CI and release.
 
 ## Included MagicMirror Modules
 
-- **[MMM-BartTimes](https://github.com/tnoff/MMM-BartTimes)**: Display BART transit times
+- **[MMM-BartTimes](https://github.com/tnoff/MMM-BartTimes)**: Display BART transit times (fetched at build time at a Renovate-pinned commit, `ARG MMM_BARTTIMES_REF`)
 - **[MMM-Wallpaper](https://github.com/kolbyjack/MMM-Wallpaper)**: Background image slideshow
+
+## Deployment
+
+CI pushes the image to OCIR (`linux/arm64`) tagged `:<short-sha>` and `:latest`
+and sends a `repository_dispatch` (`bump_source: magic-mirror`) to
+`tnoff/docker-apps`. Its `bump-image-pin.yml` opens one PR that rewrites the
+pin for every site under
+[`apps/mirror/`](https://github.com/tnoff/docker-apps/tree/main/apps/mirror)
+(castro, concord, sanjose). Each site mounts its own `mirror-config` ConfigMap
+at `/opt/mirror/env/`; API keys (`mirror-openweather-key`, `mirror-bart-key`)
+are terraform-managed Secrets passed in as environment variables.
 
 ## License
 

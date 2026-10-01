@@ -1,12 +1,12 @@
 # Development
 
 Build, test, and CI for this Docker image. End-user documentation
-(mounting config, env vars, ports) lives in [README.md](../README.md); for
+(mounting config, env vars, ports) lives in [README.md](README.md); for
 agent-facing internals see [AGENTS.md](AGENTS.md).
 
 ## Prerequisites
 
-- Docker with `buildx` (matches the multi-platform CI build)
+- Docker with `buildx` (CI builds `linux/arm64`, the cluster architecture)
 
 ## Building locally
 
@@ -14,10 +14,10 @@ agent-facing internals see [AGENTS.md](AGENTS.md).
 docker build -t magic-mirror .
 ```
 
-Multi-platform build (matches CI):
+Build for the cluster architecture (what CI pushes):
 
 ```bash
-docker buildx build --platform linux/amd64,linux/arm64 .
+docker buildx build --platform linux/arm64 .
 ```
 
 Override a pinned upstream ref (the `# renovate:` comments in the
@@ -47,16 +47,17 @@ CI is GitHub Actions. `.github/workflows/` calls reusable workflows from
 | Caller | Reusable workflow | Purpose |
 |---|---|---|
 | `ci.yml` | `trufflehog.yml` | Secret scan on PRs |
-| `ci.yml` | `docker-build-check.yml` | PR-time "does the Dockerfile build" check, plus the image secret scan — one job, where GitLab needed two and a bucket to ship the tarball between them |
+| `ci.yml` | `docker-build-check.yml` | PR-time "does the Dockerfile build" check, plus the image secret scan — one job |
 | `ci.yml` | `bump-version.yml` | Bump `VERSION` and write a changelog fragment on `renovate/dev-*` PRs |
 | `ci.yml` | `check-workflow-contracts.yml` | Catch a `uses:` whose inputs/secrets no longer match the pinned callee |
 | `release.yml` | `assemble-changelog.yml` | Fold `changelog.d/*.md` into `CHANGELOG.md` on `main` |
 | `release.yml` | `tag.yml` | Read `VERSION`, push the matching git tag |
 | `release.yml` | `docker-push.yml` | Build + push the image with `:<short-sha>` and `:latest` tags to OCIR |
-| `release.yml` | `trigger-bump-dispatch.yml` | Open an MR in `docker-apps` to bump the SHA pin after a successful push |
+| `release.yml` | `trigger-bump-dispatch.yml` | `repository_dispatch` (`bump_source: magic-mirror`) to `docker-apps`, whose `bump-image-pin.yml` opens the PR that bumps the pin at every `apps/mirror/<site>` |
 | `scheduled.yml` | `renovate.yml`, `branch-cleanup.yml` | Weekly dependency updates and stale-branch pruning |
 
-`.gitlab-ci.yml` is frozen in place for history and no longer runs.
+`techdocs-publish.yml` publishes this site to Backstage TechDocs when
+`docs/**`, `mkdocs.yml` or `catalog-info.yaml` change.
 
 `VERSION` is the single source of truth — bump it and CI tags + pushes
 the new image. Don't tag manually.
@@ -73,7 +74,7 @@ comments:
 | `MMM_WALLPAPER_REF` | `kolbyjack/MMM-Wallpaper` (GitHub) |
 
 Renovate watches each via the `# renovate: datasource=git-refs …`
-comments above the ARG line and opens MRs to bump the SHA. Don't edit
+comments above the ARG line and opens PRs to bump the SHA. Don't edit
 the comments — Renovate parses them and silent breakage there means
 silent staleness.
 

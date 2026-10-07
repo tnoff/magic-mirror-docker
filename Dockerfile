@@ -4,7 +4,7 @@
 # gettext, installed below. Measured on amd64: 2.13 GB -> 1.18 GB, a 45% cut,
 # with the image verified at parity -- same node v25.9.0, envsubst present,
 # identical 658 node_modules packages, both source patches applied.
-FROM node:25-bookworm-slim
+FROM node:26-bookworm-slim
 
 # Setup basics
 # Update to latest for security fixes

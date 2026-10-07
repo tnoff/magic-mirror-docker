@@ -14,7 +14,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # renovate: datasource=git-refs depName=MagicMirror packageName=https://github.com/MagicMirrorOrg/MagicMirror currentValue=master
-ARG MAGICMIRROR_REF=4b4a59534f7da01e4030e46029fe9dd649a7675e
+ARG MAGICMIRROR_REF=f138f5b690ceab6450f55c852ac81d268363f563
 # MMM-BartTimes flipped to GitHub-canonical; the GitLab copy is frozen at this
 # very SHA, so a git-refs datasource pointed there would report "up to date"
 # forever and this pin would silently stop moving. Same archive byte-for-byte

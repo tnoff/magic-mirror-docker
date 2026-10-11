@@ -52,7 +52,7 @@ CI is GitHub Actions. `.github/workflows/` calls reusable workflows from
 | `ci.yml` | `check-workflow-contracts.yml` | Catch a `uses:` whose inputs/secrets no longer match the pinned callee |
 | `release.yml` | `assemble-changelog.yml` | Fold `changelog.d/*.md` into `CHANGELOG.md` on `main` |
 | `release.yml` | `tag.yml` | Read `VERSION`, push the matching git tag |
-| `release.yml` | `docker-push.yml` | Build + push the image with `:<short-sha>` and `:latest` tags to OCIR |
+| `release.yml` | `docker-push-oidc.yml` | Build + push the image with `:<short-sha>` and `:latest` tags to OCIR, logging in with a short-lived token from the job's GitHub OIDC identity (no stored OCIR credential) |
 | `release.yml` | `trigger-bump-dispatch.yml` | `repository_dispatch` (`bump_source: magic-mirror`) to `docker-apps`, whose `bump-image-pin.yml` opens the PR that bumps the pin at every `apps/mirror/<site>` |
 | `scheduled.yml` | `renovate.yml`, `branch-cleanup.yml` | Weekly dependency updates and stale-branch pruning |
 

@@ -143,10 +143,8 @@ jobs:
     needs: push-image
     uses: tnoff/github-workflows/.github/workflows/trigger-bump-dispatch.yml@adea087c43d56fd13d5b1abf2d5f2ba3e695784d  # trigger-bump-dispatch-v1.0.0
     # bump_source is magic-mirror, NOT the repo name -- docker-apps rewrites the
-    # pin in every apps/mirror/<site> manifest from that key. Three sites as of
-    # 2026-08-27 (castro, concord, sanjose); do not re-enumerate them here, the
-    # comment this replaced said "both castro and concord" and had been wrong
-    # since sanjose landed on 2026-08-12.
+    # pin in every apps/mirror/<site> manifest from that key. Do not enumerate the
+    # sites here: the list changes (an earlier comment naming them went stale).
     with:
       bump_source: magic-mirror
       image: ${{ needs.push-image.outputs.image }}

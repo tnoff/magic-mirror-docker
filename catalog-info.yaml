@@ -14,7 +14,7 @@ metadata:
   description: >-
     Dockerised MagicMirror with OpenTelemetry instrumentation, built from upstream with
     MMM-BartTimes and MMM-Wallpaper baked in at pinned refs. docker-apps runs this image
-    three times, one per physical location -- mirror-castro, mirror-concord and
+    three times, one per physical location -- mirror-dublin, mirror-concord and
     mirror-sanjose, each its own Component in that repo.
   annotations:
     backstage.io/techdocs-ref: dir:.
@@ -26,10 +26,10 @@ metadata:
   # The dependsOn below stays here rather than moving to the three deployments, and that
   # is the useful half of the split. Both modules are ADDed into the image at pinned refs
   # (Dockerfile lines 23 and 41), so every mirror ships both regardless of which it
-  # displays -- castro renders BartTimes and Wallpaper, concord renders BartTimes,
-  # sanjose renders neither. That difference is CONFIG, not a build dependency, so the
+  # displays -- dublin renders BartTimes and Wallpaper, concord and sanjose render
+  # BartTimes only. That difference is CONFIG, not a build dependency, so the
   # edge belongs to the artifact and not to its instances. Putting it on the deployments
-  # would have said sanjose depends on a module it never renders.
+  # would have said concord depends on a module it never renders.
   #
   # No MMM-Wallpaper edge: it is kolbyjack's repo, outside this fleet, so there is no
   # entity to point at. Absent rather than invented.

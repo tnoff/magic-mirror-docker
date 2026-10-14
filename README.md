@@ -138,7 +138,7 @@ and sends a `repository_dispatch` (`bump_source: magic-mirror`) to
 `tnoff/docker-apps`. Its `bump-image-pin.yml` opens one PR that rewrites the
 pin for every site under
 [`apps/mirror/`](https://github.com/tnoff/docker-apps/tree/main/apps/mirror)
-(castro, concord, sanjose). Each site mounts its own `mirror-config` ConfigMap
+(dublin, concord, sanjose). Each site mounts its own `mirror-config` ConfigMap
 at `/opt/mirror/env/`; API keys (`mirror-openweather-key`, `mirror-bart-key`)
 are terraform-managed Secrets passed in as environment variables.
 

@@ -20,7 +20,7 @@ ARG MAGICMIRROR_REF=f138f5b690ceab6450f55c852ac81d268363f563
 # forever and this pin would silently stop moving. Same archive byte-for-byte
 # (74538 bytes, 25 entries) -- verified 2026-08-27.
 # renovate: datasource=git-refs depName=MMM-BartTimes packageName=https://github.com/tnoff/MMM-BartTimes currentValue=main
-ARG MMM_BARTTIMES_REF=f79b861616ed5dfa22dd15ea019595931beefa64
+ARG MMM_BARTTIMES_REF=c700f77ca939694a9fd4712fdcbcc51a3b4e8a29
 # renovate: datasource=git-refs depName=MMM-Wallpaper packageName=https://github.com/kolbyjack/MMM-Wallpaper currentValue=master
 ARG MMM_WALLPAPER_REF=d89f64eec37a9b9e3020eb4a0f413b628e10ef03
 

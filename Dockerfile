@@ -22,7 +22,7 @@ ARG MAGICMIRROR_REF=f138f5b690ceab6450f55c852ac81d268363f563
 # renovate: datasource=git-refs depName=MMM-BartTimes packageName=https://github.com/tnoff/MMM-BartTimes currentValue=main
 ARG MMM_BARTTIMES_REF=c700f77ca939694a9fd4712fdcbcc51a3b4e8a29
 # renovate: datasource=git-refs depName=MMM-Wallpaper packageName=https://github.com/kolbyjack/MMM-Wallpaper currentValue=master
-ARG MMM_WALLPAPER_REF=d89f64eec37a9b9e3020eb4a0f413b628e10ef03
+ARG MMM_WALLPAPER_REF=3dc193a3ac015ca4e5da169cfc760864463fa9c4
 
 # Setup mirror
 RUN mkdir -p /opt/mirror/MagicMirror

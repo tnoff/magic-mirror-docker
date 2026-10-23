@@ -1,11 +1,20 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["github>tnoff/github-workflows//renovate/default-github"],
-  "enabledManagers": ["github-actions", "dockerfile", "npm", "custom.regex"],
+  "extends": [
+    "github>tnoff/github-workflows//renovate/default-github"
+  ],
+  "enabledManagers": [
+    "github-actions",
+    "dockerfile",
+    "npm",
+    "custom.regex"
+  ],
   "customManagers": [
     {
       "customType": "regex",
-      "managerFilePatterns": ["/Dockerfile$/"],
+      "managerFilePatterns": [
+        "/Dockerfile$/"
+      ],
       "matchStrings": [
         "# renovate: datasource=(?<datasource>[a-z-]+) depName=(?<depName>[^\\s]+) packageName=(?<packageName>[^\\s]+) currentValue=(?<currentValue>[^\\s]+)\\s+ARG \\w+=(?<currentDigest>[a-f0-9]{40})"
       ]
@@ -13,19 +22,48 @@
   ],
   "packageRules": [
     {
-      "matchPackageNames": ["pytest", "pytest-cov", "pytest-mock", "requests-mock", "tox", "pylint", "bandit"],
+      "matchPackageNames": [
+        "pytest",
+        "pytest-cov",
+        "pytest-mock",
+        "requests-mock",
+        "tox",
+        "pylint",
+        "bandit"
+      ],
       "additionalBranchPrefix": "test-",
       "automerge": true
     },
     {
-      "matchManagers": ["npm", "dockerfile", "custom.regex"],
-      "matchPackageNames": ["!pytest", "!pytest-cov", "!pytest-mock", "!requests-mock", "!tox", "!pylint", "!bandit"],
+      "matchManagers": [
+        "npm",
+        "dockerfile",
+        "custom.regex"
+      ],
+      "matchPackageNames": [
+        "!pytest",
+        "!pytest-cov",
+        "!pytest-mock",
+        "!requests-mock",
+        "!tox",
+        "!pylint",
+        "!bandit"
+      ],
       "additionalBranchPrefix": "dev-"
     },
     {
       "description": "Group all OpenTelemetry SDK + instrumentation packages into a single MR; the core (opentelemetry-js) and contrib (opentelemetry-js-contrib) monorepos otherwise land as separate MRs that conflict on package.json.",
-      "matchPackageNames": ["@opentelemetry/**"],
+      "matchPackageNames": [
+        "@opentelemetry/**"
+      ],
       "groupName": "opentelemetry"
+    },
+    {
+      "description": "CI-only updates (action pins, reusable-workflow pins) change nothing that ships, so they must not cut a release. Listed last so it overrides the dev- prefix above; ci.yml's bump-version job only fires on renovate/dev-.",
+      "matchFileNames": [
+        ".github/**"
+      ],
+      "additionalBranchPrefix": "ci-"
     }
   ]
 }
